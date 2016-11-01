@@ -20,6 +20,7 @@ package com.achep.acdisplay.ui.activities.settings;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.XmlRes;
+import android.util.Log;
 
 import com.achep.acdisplay.R;
 import com.achep.acdisplay.services.activemode.ActiveModeService;
@@ -31,6 +32,7 @@ import com.achep.acdisplay.ui.fragments.settings.MoreSettings;
 import com.achep.acdisplay.ui.fragments.settings.NotificationSettings;
 import com.achep.base.dashboard.DashboardTile;
 import com.achep.base.ui.activities.SettingsActivity;
+import com.afollestad.digitus.Digitus;
 
 import static com.achep.base.Build.DEBUG;
 
@@ -73,5 +75,12 @@ public class Settings2 extends SettingsActivity {
                 return ActiveModeService.isSupported(this);
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.e("PERMISSION", "Notify Digitus of the result");
+        Digitus.get().handleResult(requestCode, permissions, grantResults);
     }
 }

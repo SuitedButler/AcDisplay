@@ -128,5 +128,7 @@
     <!-- Content description of the battery level icon for accessibility (not shown on the screen). [CHAR LIMIT=UNKNOWN] -->
     <string name="accessibility_battery_level">Battery <xliff:g id="number" example="100">%d</xliff:g> percent.</string>
     <string name="settings_fingerprint_description">Use fingerprint to unlock screen. Only works if your phone supports fingerprint authentication.</string>
+    <string name="fingerprint_listening">Place your finger on the sensor.</string>
+    <string name="fingerprint_authenticated">Fingerprint authenticated!</string>
 
 </resources>

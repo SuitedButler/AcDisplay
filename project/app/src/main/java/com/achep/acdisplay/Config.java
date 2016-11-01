@@ -18,12 +18,15 @@
  */
 package com.achep.acdisplay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import com.achep.acdisplay.notifications.NotificationPresenter;
 import com.achep.acdisplay.plugins.powertoggles.ToggleReceiver;
@@ -31,6 +34,9 @@ import com.achep.acdisplay.services.KeyguardService;
 import com.achep.acdisplay.services.SensorsDumpService;
 import com.achep.acdisplay.services.activemode.ActiveModeService;
 import com.achep.base.content.ConfigBase;
+import com.afollestad.digitus.Digitus;
+import com.afollestad.digitus.DigitusCallback;
+import com.afollestad.digitus.DigitusErrorType;
 
 import java.util.Map;
 
@@ -149,7 +155,7 @@ public final class Config extends ConfigBase {
     private boolean mActiveModeActiveCharging;
     private boolean mActiveModeDisableOnLowBattery;
     private boolean mActiveModeWave2Wake;
-    private boolean mFingerprintUnlock;
+    private boolean mFingerprintUnlockEnabled;
     private boolean mEnabledOnlyWhileCharging;
     private boolean mScreenOffAfterLastNotify;
     private boolean mDoubleTapToSleep;
@@ -195,6 +201,9 @@ public final class Config extends ConfigBase {
     private boolean mTrigTranslated;
     private boolean mTrigHelpRead;
     private boolean mTrigDonationAsked;
+
+    private Activity mActivity;
+    private Toast toast;
 
     @NonNull
     public static synchronized Config getInstance() {
@@ -258,7 +267,7 @@ public final class Config extends ConfigBase {
 
         // fingerprint
         map.put(KEY_FINGERPRINT, new ConfigBase.Option(
-                "mFingerprintUnlock", null, null, boolean.class)
+                "mFingerprintUnlockEnabled", null, null, boolean.class)
                 .setDefaultRes(R.bool.config_default_fingerprint_unlock_enabled));
 
         // notifications
@@ -399,6 +408,10 @@ public final class Config extends ConfigBase {
                 .setDefault(false));
     }
 
+    public void setActivity(Activity activity) {
+        this.mActivity = activity;
+    }
+
     @Override
     protected void onOptionChanged(@NonNull Option option, @NonNull String key) {
         switch (key) {
@@ -409,6 +422,56 @@ public final class Config extends ConfigBase {
                 KeyguardService.handleState(getContext());
                 break;
             case KEY_FINGERPRINT:
+                if (sConfig.isFingerprintUnlockEnabled()) {
+                    Digitus.init(this.mActivity, this.mActivity.getString(R.string.app_name), 69, new DigitusCallback() {
+                        @Override
+                        public void onDigitusReady(Digitus digitus) {
+                            digitus.startListening();
+                        }
+
+                        @Override
+                        public void onDigitusListening(boolean newFingerprint) {
+                            Log.e("Digitus", "Listening");
+                            showToast(mActivity.getString(R.string.fingerprint_listening));
+                        }
+
+                        @Override
+                        public void onDigitusAuthenticated(Digitus digitus) {
+                            Log.e("Digitus", "Authenticated");
+                            showToast(mActivity.getString(R.string.fingerprint_authenticated));
+                        }
+
+                        @Override
+                        public void onDigitusError(Digitus digitus, DigitusErrorType type, Exception e) {
+                            switch (type) {
+                                case FINGERPRINT_NOT_RECOGNIZED:
+                                    showToast(mActivity.getString(R.string.fingerprint_not_recognized));
+                                    break;
+                                case FINGERPRINTS_UNSUPPORTED:
+                                    showToast(mActivity.getString(R.string.donate_billing_not_supported));
+                                    break;
+                                case HELP_ERROR:
+                                    showToast("A help message for the user, e.g. \"Clean the sensor\", \"Swiped too fast, try again\"");
+                                    // A help message for the user, e.g. "Clean the sensor", "Swiped too fast, try again", etc.
+                                    // e.getMessage() should be displayed in UI so the user knows to try again.
+                                    break;
+                                case PERMISSION_DENIED:
+                                    showToast(mActivity.getString(R.string.permissions_auto_disabled));
+                                    // The USE_FINGERPRINT permission was denied by the user or device.
+                                    // You should fallback to password authentication.
+                                    break;
+                                case REGISTRATION_NEEDED:
+                                    showToast(mActivity.getString(R.string.no_fingerprints_registered));
+                                    //digitus.openSecuritySettings();
+                                    break;
+                                case UNRECOVERABLE_ERROR:
+                                    showToast(mActivity.getString(R.string.error_dialog_title));
+                                    // An recoverable error occurred, no further callbacks are sent until you start listening again.
+                                    break;
+                            }
+                        }
+                    });
+                }
                 break;
             case KEY_ENABLED:
                 ToggleReceiver.sendStateUpdate(ToggleReceiver.class, mEnabled, getContext());
@@ -439,6 +502,18 @@ public final class Config extends ConfigBase {
                 }
                 break;
                 */
+        }
+    }
+
+    private void showToast(String message) {
+        Log.e("TOAST MESSAGE", message);
+        if (toast != null) {
+            toast.cancel();
+            toast = Toast.makeText(mActivity, message, Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            toast = Toast.makeText(mActivity, message, Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
@@ -666,6 +741,10 @@ public final class Config extends ConfigBase {
      */
     public boolean isActiveModeActiveChargingEnabled() {
         return mActiveModeActiveCharging;
+    }
+
+    public boolean isFingerprintUnlockEnabled() {
+        return mFingerprintUnlockEnabled;
     }
 
     public boolean isEnabledOnlyWhileCharging() {

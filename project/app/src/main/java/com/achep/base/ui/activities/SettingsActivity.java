@@ -629,7 +629,6 @@ public abstract class SettingsActivity extends ActivityBase implements
          */
         public static Intent onBuildStartFragmentIntent(Context context, String fragmentName,
                                                         Bundle args, int titleResId, CharSequence title, boolean isShortcut) {
-            Log.e("HERE", fragmentName);
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setClass(context, SubSettings.class);
             intent.putExtra(EXTRA_SHOW_FRAGMENT, fragmentName);

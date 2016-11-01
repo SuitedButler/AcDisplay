@@ -207,6 +207,10 @@ public class AcDisplayFragment extends LeakWatchFragment implements
         return getConfig().isWidgetReadable();
     }
 
+    private boolean isFingerprintUnlockEnabled() {
+        return getConfig().isFingerprintUnlockEnabled();
+    }
+
     /**
      * Unlocks the keyguard and runs {@link Runnable runnable} when unlocked.
      *
