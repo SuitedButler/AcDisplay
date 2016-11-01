@@ -19,20 +19,16 @@
 package com.achep.base.ui.fragments.dialogs;
 
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.achep.acdisplay.R;
 import com.achep.base.permissions.Permission;
 import com.achep.base.ui.adapters.PermissionAdapter;
-import com.achep.base.utils.ToastUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
@@ -96,9 +92,9 @@ public class PermissionsDialog extends DialogFragment {
         TextView title = md.getTitleView();
         title.setTextColor(title.getCurrentTextColor() & 0xFFFF3333 | 0xFF << 16);
 
-        ListView listView = md.getListView();
+        RecyclerView listView = md.getRecyclerView();
         assert listView != null;
-        mAdapter = new PermissionAdapter(context, new ArrayList<Permission>());
+        mAdapter = new PermissionAdapter(context, new ArrayList<Permission>());/*
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -114,7 +110,7 @@ public class PermissionsDialog extends DialogFragment {
                 }
             }
         });
-
+*/
         return md;
     }
 

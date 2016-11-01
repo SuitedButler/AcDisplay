@@ -18,7 +18,7 @@
   ~ MA  02110-1301, USA.
   -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/settings_active_title">
+    android:title="@string/settings_fingerprint_title">
 
     <Preference
         android:enabled="false"

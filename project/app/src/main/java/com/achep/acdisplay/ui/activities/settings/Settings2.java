@@ -24,6 +24,7 @@ import android.support.annotation.XmlRes;
 import com.achep.acdisplay.R;
 import com.achep.acdisplay.services.activemode.ActiveModeService;
 import com.achep.acdisplay.ui.fragments.settings.ActiveModeSettings;
+import com.achep.acdisplay.ui.fragments.settings.FingerPrintSettings;
 import com.achep.acdisplay.ui.fragments.settings.InterfaceSettings;
 import com.achep.acdisplay.ui.fragments.settings.KeyguardSettings;
 import com.achep.acdisplay.ui.fragments.settings.MoreSettings;
@@ -41,6 +42,7 @@ public class Settings2 extends SettingsActivity {
     private static final String[] ENTRY_FRAGMENTS = {
             KeyguardSettings.class.getName(),
             ActiveModeSettings.class.getName(),
+            FingerPrintSettings.class.getName(),
             NotificationSettings.class.getName(),
             InterfaceSettings.class.getName(),
             MoreSettings.class.getName()

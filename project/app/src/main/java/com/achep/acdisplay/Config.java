@@ -149,6 +149,7 @@ public final class Config extends ConfigBase {
     private boolean mActiveModeActiveCharging;
     private boolean mActiveModeDisableOnLowBattery;
     private boolean mActiveModeWave2Wake;
+    private boolean mFingerprintUnlock;
     private boolean mEnabledOnlyWhileCharging;
     private boolean mScreenOffAfterLastNotify;
     private boolean mDoubleTapToSleep;
@@ -254,6 +255,11 @@ public final class Config extends ConfigBase {
         map.put(KEY_ACTIVE_MODE_WAVE_TO_WAKE, new ConfigBase.Option(
                 "mActiveModeWave2Wake", null, null, boolean.class)
                 .setDefaultRes(R.bool.config_default_active_mode_wave_to_wake));
+
+        // fingerprint
+        map.put(KEY_FINGERPRINT, new ConfigBase.Option(
+                "mFingerprintUnlock", null, null, boolean.class)
+                .setDefaultRes(R.bool.config_default_fingerprint_unlock_enabled));
 
         // notifications
         map.put(KEY_NOTIFY_WAKE_UP_ON, new ConfigBase.Option(
@@ -401,6 +407,8 @@ public final class Config extends ConfigBase {
                 break;
             case KEY_KEYGUARD:
                 KeyguardService.handleState(getContext());
+                break;
+            case KEY_FINGERPRINT:
                 break;
             case KEY_ENABLED:
                 ToggleReceiver.sendStateUpdate(ToggleReceiver.class, mEnabled, getContext());
