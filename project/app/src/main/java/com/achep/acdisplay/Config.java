@@ -63,6 +63,9 @@ public final class Config extends ConfigBase {
     public static final String KEY_TIMEOUT_NORMAL = "timeout_normal";
     public static final String KEY_TIMEOUT_SHORT = "timeout_short";
 
+    // fingerprint
+    public static final String KEY_FINGERPRINT = "fingerprint";
+
     // keyguard
     public static final String KEY_KEYGUARD = "keyguard";
     public static final String KEY_KEYGUARD_RESPECT_INACTIVE_TIME = "keyguard_respect_inactive_time";
